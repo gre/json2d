@@ -1,0 +1,24 @@
+{
+  "name": "slide2d",
+  "version": "1.0.0",
+  "description": "Express vectorial content in JSON using canvas2d directives",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:gre/slide2d.git"
+  },
+  "keywords": [
+    "canvas2d",
+    "slide",
+    "json"
+  ],
+  "author": "Gaëtan Renaudeau",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gre/slide2d/issues"
+  },
+  "homepage": "https://github.com/gre/slide2d",
+  "dependencies": {
+    "rect-crop": "0.0.0"
+  }
+}
