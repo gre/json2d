@@ -27,11 +27,13 @@ The full canvas will be filled with a **`background` color**.
 
 ### `draws`
 
-Your **`draws` directives** will be used to fill content. These directives allow almost every possible shapes that canvas2d provides and using a simple mapping:
+Your **`draws` directives** will be used to fill and draw content. These directives are **direct mapping from [Canvas 2D context API](http://www.w3.org/TR/2dcontext/)**. Almost every possible shapes that canvas2d provides are supported with following DSL:
 
 **`draws` directives is an array where each element `E` is either an object or an array:**
 - If `E` is an *object*: all values or this object will be set to the canvas context.
 - If `E` is an *array*: the first element is the canvas2d context method name and the following elements are arguments to that method.
+
+All draws that occurs will be scaled relatively to the `size` you have defined. That way, we can define scalable (vectorial) content.
 
 ## Full Example:
 
@@ -74,5 +76,12 @@ document.body.appendChild(canvas);
 
 ```
 
-
 ![](http://i.imgur.com/T1RBg42.png)
+
+Note in the example how the content is trying to take the biggest possible rectangle in the canvas viewport. For the sake of this example, we have drawn the biggest possible rectangle with a red stroke, but usually you just fill text and shapes in the middle to have a seamless rendering.
+
+
+
+## Used by...
+
+- [diaporama](https://github.com/gre/diaporama/)
