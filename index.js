@@ -34,11 +34,11 @@ function Slide2d (context2d) {
 }
 
 Slide2d.prototype = {
-  _getSize: function (item) {
+  getSize: function (item) {
     return item.size || [ 1000, 1000 ];
   },
   getRectangle: function (item) {
-    var size = this._getSize(item);
+    var size = this.getSize(item);
     var w = size[0];
     var h = size[1];
     return rectCrop.largest({ width: w, height: h }, this.ctx.canvas);
@@ -51,7 +51,7 @@ Slide2d.prototype = {
     var bg = item.background || "#000";
     var draws = item.draws || [];
     var drawslength = draws.length;
-    var size = this._getSize(item);
+    var size = this.getSize(item);
     var w = size[0];
     var h = size[1];
 
