@@ -48,6 +48,8 @@ Note that you still have to define where the new lines are.
 In that context, you
 **MUST provide a 4th parameter** if you want that multi-line feature: **the lineHeight in pixels**.
 
+> Note: the `maxWidth` that allows the [canvas2d specification](http://www.w3.org/TR/2dcontext/#drawing-text-to-the-canvas) is not supported by slide2d.
+
 ## Full Example:
 
 ```js

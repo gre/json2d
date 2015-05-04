@@ -4,13 +4,14 @@ function drawOp (op, args, ctx) {
   switch (op) {
     case "fillText":
     case "strokeText":
-      var lines = args[0].split("\n");
+      var text = args[0];
+      var lines = text.split("\n");
       var lineslength = lines.length;
       var x = args[1];
       var y = args[2];
       if (lineslength === 1 || args.length < 4) {
         // Simply apply the operation
-        ctx[op].apply(ctx, args);
+        ctx[op].call(ctx, text, x, y);
       }
       else {
         // Extend the text operation into multi-line text
@@ -65,6 +66,7 @@ Slide2d.prototype = {
         }
       }
     }
+    ctx.restore();
   }
 };
 
