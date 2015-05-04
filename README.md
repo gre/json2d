@@ -35,6 +35,19 @@ Your **`draws` directives** will be used to fill and draw content. These directi
 
 All draws that occurs will be scaled relatively to the `size` you have defined. That way, we can define scalable (vectorial) content.
 
+## Extension to the Canvas 2D API
+
+There are some exceptions where the `draws` get extended.
+
+### Multi-line texts support
+
+`slide2d` supports multi-line texts using the `\n` character.
+To do so, every texts will be split on `\n` and result of multiple texts draws.
+Note that you still have to define where the new lines are.
+
+In that context, you
+**MUST provide a 4th parameter** if you want that multi-line feature: **the lineHeight in pixels**.
+
 ## Full Example:
 
 ```js
@@ -48,12 +61,14 @@ var json = {
     [ "stroke" ],
     [ "beginPath" ],
     { "fillStyle": "#f00" },
-    [ "arc", 280, 350, 20, 0, 7 ],
+    [ "arc", 280, 200, 20, 0, 7 ],
     [ "fill" ],
     { "font": "bold 80px sans-serif", "fillStyle": "#000", "textBaseline": "middle", "textAlign": "center" },
-    [ "fillText", "Hello World", 400, 250 ],
+    [ "fillText", "Hello World", 400, 100 ],
     { "font": "normal 80px sans-serif", "fillStyle": "#f00", "textBaseline": "middle", "textAlign": "center" },
-    [ "fillText", "Red", 400, 350 ]
+    [ "fillText", "Red", 400, 200 ],
+    { "font": "italic 40px sans-serif", "fillStyle": "#aaa", "textBaseline": "middle", "textAlign": "center" },
+    [ "fillText", "does support\nmulti-line texts!\n\nusing the \\n character.", 400, 300, 48]
   ]
 };
 
@@ -67,16 +82,15 @@ function Canvas (w, h, r) {
   return canvas;
 }
 
-var Slide2d = require("slide2d");
+var Slide2d = require(".");
 var canvas = Canvas(600, 300, window.devicePixelRatio || 1);
 var ctx = canvas.getContext("2d");
 var slide2d = Slide2d(ctx);
 slide2d.render(json);
 document.body.appendChild(canvas);
-
 ```
 
-![](http://i.imgur.com/T1RBg42.png)
+![](example.jpg)
 
 Note in the example how the content is trying to take the biggest possible rectangle in the canvas viewport. For the sake of this example, we have drawn the biggest possible rectangle with a red stroke, but usually you just fill text and shapes in the middle to have a seamless rendering.
 
