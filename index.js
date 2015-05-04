@@ -34,23 +34,32 @@ function Slide2d (context2d) {
 }
 
 Slide2d.prototype = {
+  _getSize: function (item) {
+    return item.size || [ 1000, 1000 ];
+  },
+  getRectangle: function (item) {
+    var size = this._getSize(item);
+    var w = size[0];
+    var h = size[1];
+    return rectCrop.largest({ width: w, height: h }, this.ctx.canvas);
+  },
   render: function (item) {
     var ctx = this.ctx;
     var canvas = ctx.canvas;
     var W = canvas.width;
     var H = canvas.height;
-    var size = item.size || [ 1000, 1000 ];
-    var w = size[0];
-    var h = size[1];
     var bg = item.background || "#000";
     var draws = item.draws || [];
     var drawslength = draws.length;
+    var size = this._getSize(item);
+    var w = size[0];
+    var h = size[1];
 
     ctx.save();
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
-    var rect = rectCrop.largest({ width: w, height: h }, canvas);
+    var rect = this.getRectangle(item);
 
     ctx.translate(Math.round(rect[0]), Math.round(rect[1]));
     ctx.scale(rect[2] / w, rect[3] / h);
