@@ -100,6 +100,9 @@ Slide2d.prototype = {
           // Draw Operation
           this._renderOp(op, draw.slice(1));
         }
+        else {
+          throw new UnsupportedDrawOperation("must be a string operation: " + op);
+        }
       }
       else {
         // Styles changes
