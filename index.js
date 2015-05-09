@@ -6,6 +6,35 @@ var defaults = {
   size: [1000, 1000]
 };
 
+function UnsupportedDrawOperation () {
+  var temp = Error.apply(this, arguments);
+  this.name = temp.name = "UnsupportedDrawOperation";
+  this.stack = temp.stack;
+  this.message = temp.message;
+}
+UnsupportedDrawOperation.prototype = Object.create(Error.prototype, {
+    constructor: {
+        value: UnsupportedDrawOperation,
+        writable: true,
+        configurable: true
+    }
+});
+
+function MyError() {
+    var temp = Error.apply(this, arguments);
+    temp.name = this.name = 'MyError';
+    this.stack = temp.stack;
+    this.message = temp.message;
+}
+//inherit prototype using ECMAScript 5 (IE 9+)
+MyError.prototype = Object.create(Error.prototype, {
+    constructor: {
+        value: MyError,
+        writable: true,
+        configurable: true
+    }
+});
+
 function Slide2d (context2d) {
   if (!(this instanceof Slide2d))
     return new Slide2d(context2d);
@@ -67,9 +96,9 @@ Slide2d.prototype = {
           this._renderRec(draw);
           ctx.restore();
         }
-        else {
+        else if (typeof op === "string") {
           // Draw Operation
-          this._renderOp(draw[0], draw.slice(1), ctx);
+          this._renderOp(op, draw.slice(1));
         }
       }
       else {
@@ -81,10 +110,12 @@ Slide2d.prototype = {
     }
   },
 
-  _renderOp: function (op, args, ctx) {
+  _renderOp: function (op, args) {
+    var ctx = this.ctx;
     switch (op) {
       case "drawImage":
-        drawImage.apply(null, [ ctx, this._imageForUrl(args[0]) ].concat(args.slice(1)));
+        var img = typeof args[0] === "string" ? this._imageForUrl(args[0]) : img;
+        drawImage.apply(null, [ ctx, img ].concat(args.slice(1)));
         break;
 
       case "fillText":
@@ -108,7 +139,11 @@ Slide2d.prototype = {
         break;
 
       default:
-        ctx[op].apply(ctx, args);
+        var f = ctx[op];
+        if (typeof f === "function")
+          f.apply(ctx, args);
+        else
+          throw new UnsupportedDrawOperation(op);
     }
   },
 
