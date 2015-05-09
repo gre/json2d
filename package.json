@@ -1,6 +1,6 @@
 {
   "name": "slide2d",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Express vectorial content in JSON using canvas2d directives",
   "main": "index.js",
   "repository": {
