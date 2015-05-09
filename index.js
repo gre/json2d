@@ -1,5 +1,10 @@
 var rectCrop = require("rect-crop");
 
+var defaults = {
+  background: "#000",
+  size: [1000, 1000]
+};
+
 function drawOp (op, args, ctx) {
   switch (op) {
     case "fillText":
@@ -33,9 +38,11 @@ function Slide2d (context2d) {
   this.ctx = context2d;
 }
 
+Slide2d.defaults = defaults;
+
 Slide2d.prototype = {
   getSize: function (item) {
-    return item.size || [ 1000, 1000 ];
+    return item.size || defaults.size;
   },
   getRectangle: function (item) {
     var size = this.getSize(item);
@@ -48,7 +55,7 @@ Slide2d.prototype = {
     var canvas = ctx.canvas;
     var W = canvas.width;
     var H = canvas.height;
-    var bg = item.background || "#000";
+    var bg = item.background || defaults.size;
     var draws = item.draws || [];
     var drawslength = draws.length;
     var size = this.getSize(item);
