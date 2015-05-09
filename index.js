@@ -24,6 +24,7 @@ Slide2d.prototype = {
   getSize: function (item) {
     return item.size || defaults.size;
   },
+
   getRectangle: function (item) {
     var size = this.getSize(item);
     var w = size[0];
@@ -31,24 +32,59 @@ Slide2d.prototype = {
     return rectCrop.largest({ width: w, height: h }, this.ctx.canvas);
   },
 
-  imageForUrl: function (url) {
-    if (url in this._imgs) {
-      return this._imgs[url];
-    }
-    var img = new window.Image();
-    img.crossOrigin = true;
-    img.src = url;
-    this._imgs[url] = img;
-    img.onload = function () {
-      if (this._item) this.render(this._item);
-    }.bind(this);
-    return img;
+  render: function (item) {
+    this._item = item;
+
+    var ctx = this.ctx;
+    var canvas = ctx.canvas;
+    var W = canvas.width;
+    var H = canvas.height;
+    var bg = item.background || defaults.size;
+    var size = this.getSize(item);
+    var rect = this.getRectangle(item);
+    var w = size[0];
+    var h = size[1];
+
+    ctx.save();
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+    ctx.translate(Math.round(rect[0]), Math.round(rect[1]));
+    ctx.scale(rect[2] / w, rect[3] / h);
+    this._renderRec(item.draws || []);
+    ctx.restore();
   },
 
-  drawOp: function (op, args, ctx) {
+  _renderRec: function (draws) {
+    var ctx = this.ctx;
+    var drawslength = draws.length;
+    for (var i=0; i<drawslength; ++i) {
+      var draw = draws[i];
+      if (draw instanceof Array) {
+        var op = draw[0];
+        if (op instanceof Array) {
+          // Nested Draws
+          ctx.save();
+          this._renderRec(draw);
+          ctx.restore();
+        }
+        else {
+          // Draw Operation
+          this._renderOp(draw[0], draw.slice(1), ctx);
+        }
+      }
+      else {
+        // Styles changes
+        for (var k in draw) {
+          ctx[k] = draw[k];
+        }
+      }
+    }
+  },
+
+  _renderOp: function (op, args, ctx) {
     switch (op) {
       case "drawImage":
-        drawImage.apply(null, [ ctx, this.imageForUrl(args[0]) ].concat(args.slice(1)));
+        drawImage.apply(null, [ ctx, this._imageForUrl(args[0]) ].concat(args.slice(1)));
         break;
 
       case "fillText":
@@ -76,41 +112,18 @@ Slide2d.prototype = {
     }
   },
 
-  render: function (item) {
-    this._item = item;
-
-    var ctx = this.ctx;
-    var canvas = ctx.canvas;
-    var W = canvas.width;
-    var H = canvas.height;
-    var bg = item.background || defaults.size;
-    var draws = item.draws || [];
-    var drawslength = draws.length;
-    var size = this.getSize(item);
-    var w = size[0];
-    var h = size[1];
-
-    ctx.save();
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, W, H);
-
-    var rect = this.getRectangle(item);
-
-    ctx.translate(Math.round(rect[0]), Math.round(rect[1]));
-    ctx.scale(rect[2] / w, rect[3] / h);
-
-    for (var i=0; i<drawslength; ++i) {
-      var draw = draws[i];
-      if (draw instanceof Array) {
-        this.drawOp(draw[0], draw.slice(1), ctx);
-      }
-      else {
-        for (var k in draw) {
-          ctx[k] = draw[k];
-        }
-      }
+  _imageForUrl: function (url) {
+    if (url in this._imgs) {
+      return this._imgs[url];
     }
-    ctx.restore();
+    var img = new window.Image();
+    img.crossOrigin = true;
+    img.src = url;
+    this._imgs[url] = img;
+    img.onload = function () {
+      if (this._item) this.render(this._item);
+    }.bind(this);
+    return img;
   }
 };
 

@@ -11,21 +11,27 @@ var json = {
     { "fillStyle": "#f00" },
     [ "arc", 40, 40, 20, 0, 7 ],
     [ "fill" ],
-    [ "beginPath" ],
-    { "fillStyle": "#f0f", "strokeStyle": "#909", "lineWidth": 4 },
-    [ "moveTo", 100, 60 ],
-    [ "lineTo", 80, 20 ],
-    [ "lineTo", 120, 20 ],
-    [ "fill" ],
-    [ "closePath" ],
-    [ "stroke" ],
-    [ "beginPath" ],
-    { "strokeStyle": "rgba(0,0,0,0.2)", "lineWidth": 4 },
-    [ "rect", 2, 2, 796, 596 ],
-    [ "stroke" ],
-    [ "rotate", -1.5708 ],
-    { "font": "normal 60px sans-serif", "fillStyle": "#f00", "textBaseline": "top", "textAlign": "right" },
-    [ "fillText", "Some shapes", -80, 0 ]
+    [
+      [ "beginPath" ],
+      { "fillStyle": "#f0f", "strokeStyle": "#909", "lineWidth": 4 },
+      [ "moveTo", 100, 60 ],
+      [ "lineTo", 80, 20 ],
+      [ "lineTo", 120, 20 ],
+      [ "fill" ],
+      [ "closePath" ],
+      [ "stroke" ]
+    ],
+    [
+      [ "rotate", -1.5708 ],
+      { "font": "normal 60px sans-serif", "fillStyle": "#f00", "textBaseline": "top", "textAlign": "right" },
+      [ "fillText", "Some shapes", -80, 0 ]
+    ],
+    [
+      [ "beginPath" ],
+      { "strokeStyle": "rgba(0,0,0,0.2)", "lineWidth": 4 },
+      [ "rect", 2, 2, 796, 596 ],
+      [ "stroke" ]
+    ]
   ]
 };
 
