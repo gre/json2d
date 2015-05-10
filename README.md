@@ -7,7 +7,19 @@ Express vectorial content in JSON using canvas2d directives
 **slide2d** is a thin wrapper to expose canvas2d API in a JSON DSL.
 The goal is to statically describe scalable content.
 
-## The format
+## The API
+
+```
+var Slide2d = require("slide2d");
+var canvas = ...;
+var ctx = canvas.getContext("2d");
+var slide2d = Slide2d(ctx);
+
+// Now call the render method:
+slide2d.render(data);
+```
+
+## The `data` format
 
 ```js
 {
@@ -109,7 +121,7 @@ function Canvas (w, h, r) {
   return canvas;
 }
 
-var Slide2d = require(".");
+var Slide2d = require("slide2d");
 var canvas = Canvas(600, 300, window.devicePixelRatio || 1);
 var ctx = canvas.getContext("2d");
 var slide2d = Slide2d(ctx);
@@ -121,7 +133,18 @@ document.body.appendChild(canvas);
 
 Note in the example how the content is trying to take the biggest possible rectangle in the canvas viewport. For the sake of this example, we have drawn the biggest possible rectangle with a red stroke, but usually you just fill text and shapes in the middle to have a seamless rendering.
 
+## `render(data, **visitor)**`
 
+The render method allows a second parameter:
+a visitor function called after each rendering steps.
+
+It is called in **post order** for each draw *Directive*.
+
+That function is called with 2 parameters:
+- the `path`: an array of indexes of the tree path of the current draw.
+- the `draw` object.
+
+This function is used by `slide2d-editor` implementation.
 
 ## Used by...
 

@@ -49,7 +49,7 @@ var Slide2d = require(".");
 var canvas = Canvas(600, 300, window.devicePixelRatio || 1);
 var ctx = canvas.getContext("2d");
 var slide2d = Slide2d(ctx);
-slide2d.render(json);
+slide2d.render(json, console.log.bind(console));
 document.body.appendChild(canvas);
 
 

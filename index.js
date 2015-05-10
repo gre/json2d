@@ -48,7 +48,7 @@ Slide2d.prototype = {
     return rectCrop.largest({ width: w, height: h }, this.ctx.canvas);
   },
 
-  render: function (item) {
+  render: function (item, visitor) {
     this._item = item;
 
     var ctx = this.ctx;
@@ -66,11 +66,11 @@ Slide2d.prototype = {
     ctx.fillRect(0, 0, W, H);
     ctx.translate(Math.round(rect[0]), Math.round(rect[1]));
     ctx.scale(rect[2] / w, rect[3] / h);
-    this._renderRec(item.draws || defaults.draws, []);
+    this._renderRec(item.draws || defaults.draws, [], visitor || function(){});
     ctx.restore();
   },
 
-  _renderRec: function (draws, path) {
+  _renderRec: function (draws, path, visitor) {
     var ctx = this.ctx;
     var drawslength = draws.length;
     for (var i=0; i<drawslength; ++i) {
@@ -81,7 +81,7 @@ Slide2d.prototype = {
         if (op instanceof Array) {
           // Nested Draws
           ctx.save();
-          this._renderRec(draw, p);
+          this._renderRec(draw, p, visitor);
           ctx.restore();
         }
         else if (typeof op === "string") {
@@ -98,6 +98,7 @@ Slide2d.prototype = {
           ctx[k] = draw[k];
         }
       }
+      visitor(p, draw);
     }
   },
 
