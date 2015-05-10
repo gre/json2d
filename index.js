@@ -3,33 +3,20 @@ var rectCrop = require("rect-crop");
 
 var defaults = {
   background: "#000",
-  size: [1000, 1000]
+  size: [1000, 1000],
+  draws: []
 };
 
-function UnsupportedDrawOperation () {
-  var temp = Error.apply(this, arguments);
+function UnsupportedDrawOperation (reason, path) {
+  var temp = Error.call(this, reason);
   this.name = temp.name = "UnsupportedDrawOperation";
   this.stack = temp.stack;
   this.message = temp.message;
+  this.path = path;
 }
 UnsupportedDrawOperation.prototype = Object.create(Error.prototype, {
     constructor: {
         value: UnsupportedDrawOperation,
-        writable: true,
-        configurable: true
-    }
-});
-
-function MyError() {
-    var temp = Error.apply(this, arguments);
-    temp.name = this.name = 'MyError';
-    this.stack = temp.stack;
-    this.message = temp.message;
-}
-//inherit prototype using ECMAScript 5 (IE 9+)
-MyError.prototype = Object.create(Error.prototype, {
-    constructor: {
-        value: MyError,
         writable: true,
         configurable: true
     }
@@ -79,29 +66,30 @@ Slide2d.prototype = {
     ctx.fillRect(0, 0, W, H);
     ctx.translate(Math.round(rect[0]), Math.round(rect[1]));
     ctx.scale(rect[2] / w, rect[3] / h);
-    this._renderRec(item.draws || []);
+    this._renderRec(item.draws || defaults.draws, []);
     ctx.restore();
   },
 
-  _renderRec: function (draws) {
+  _renderRec: function (draws, path) {
     var ctx = this.ctx;
     var drawslength = draws.length;
     for (var i=0; i<drawslength; ++i) {
       var draw = draws[i];
+      var p = path.concat([ i ]);
       if (draw instanceof Array) {
         var op = draw[0];
         if (op instanceof Array) {
           // Nested Draws
           ctx.save();
-          this._renderRec(draw);
+          this._renderRec(draw, p);
           ctx.restore();
         }
         else if (typeof op === "string") {
           // Draw Operation
-          this._renderOp(op, draw.slice(1));
+          this._renderOp(op, draw.slice(1), p);
         }
         else {
-          throw new UnsupportedDrawOperation("must be a string operation: " + op);
+          throw new UnsupportedDrawOperation("must be a string operation: " + op, p);
         }
       }
       else {
@@ -113,7 +101,7 @@ Slide2d.prototype = {
     }
   },
 
-  _renderOp: function (op, args) {
+  _renderOp: function (op, args, path) {
     var ctx = this.ctx;
     switch (op) {
       case "drawImage":
@@ -146,7 +134,7 @@ Slide2d.prototype = {
         if (typeof f === "function")
           f.apply(ctx, args);
         else
-          throw new UnsupportedDrawOperation(op);
+          throw new UnsupportedDrawOperation(op, path);
     }
   },
 

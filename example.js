@@ -53,5 +53,4 @@ slide2d.render(json);
 document.body.appendChild(canvas);
 
 
-
 window.slide2d = slide2d; // for debug purpose
