@@ -78,18 +78,15 @@ Slide2d.prototype = {
       var p = path.concat([ i ]);
       if (draw instanceof Array) {
         var op = draw[0];
-        if (op instanceof Array) {
+        if (typeof op === "object") {
           // Nested Draws
           ctx.save();
           this._renderRec(draw, p, visitor);
           ctx.restore();
         }
-        else if (typeof op === "string") {
+        else {
           // Draw Operation
           this._renderOp(op, draw.slice(1), p);
-        }
-        else {
-          throw new UnsupportedDrawOperation("must be a string operation: " + op, p);
         }
       }
       else {
@@ -104,6 +101,9 @@ Slide2d.prototype = {
 
   _renderOp: function (op, args, path) {
     var ctx = this.ctx;
+    if (typeof op !== "string") {
+      throw new UnsupportedDrawOperation("must be a string operation: " + op, path);
+    }
     switch (op) {
       case "drawImage":
         var img = typeof args[0] === "string" ? this._imageForUrl(args[0]) : img;
