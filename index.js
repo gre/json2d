@@ -26,20 +26,25 @@ function Slide2d (context2d, imgsCache) {
   if (!(this instanceof Slide2d))
     return new Slide2d(context2d, imgsCache);
   this.ctx = context2d;
-  this._imgs = {};
-  if (imgsCache) {
-    for (var k in imgsCache) {
-      this._imgs[k] = imgsCache[k];
-    }
-  }
+  this.setImgsCache(imgsCache);
 }
 
 Slide2d.defaults = defaults;
 
 Slide2d.prototype = {
   destroy: function () {
+    this._item = null;
     this._imgs = null;
     this.ctx = null;
+  },
+
+  setImgsCache: function (imgsCache) {
+    this._imgs = {};
+    if (imgsCache) {
+      for (var k in imgsCache) {
+        this._imgs[k] = imgsCache[k];
+      }
+    }
   },
 
   getSize: function (item) {
