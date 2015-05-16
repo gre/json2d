@@ -12,8 +12,8 @@ var json = {
     [ "arc", 40, 40, 20, 0, 7 ],
     [ "fill" ],
     [
-      [ "beginPath" ],
       { "fillStyle": "#f0f", "strokeStyle": "#909", "lineWidth": 4 },
+      [ "beginPath" ],
       [ "moveTo", 100, 60 ],
       [ "lineTo", 80, 20 ],
       [ "lineTo", 120, 20 ],

@@ -22,11 +22,16 @@ UnsupportedDrawOperation.prototype = Object.create(Error.prototype, {
     }
 });
 
-function Slide2d (context2d) {
+function Slide2d (context2d, imgsCache) {
   if (!(this instanceof Slide2d))
-    return new Slide2d(context2d);
+    return new Slide2d(context2d, imgsCache);
   this.ctx = context2d;
   this._imgs = {};
+  if (imgsCache) {
+    for (var k in imgsCache) {
+      this._imgs[k] = imgsCache[k];
+    }
+  }
 }
 
 Slide2d.defaults = defaults;
