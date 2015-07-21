@@ -133,10 +133,10 @@ document.body.appendChild(canvas);
 
 Note in the example how the content is trying to take the biggest possible rectangle in the canvas viewport. For the sake of this example, we have drawn the biggest possible rectangle with a red stroke, but usually you just fill text and shapes in the middle to have a seamless rendering.
 
-## `Slide2d(context2d, **imgsCache**)`
+## `Slide2d(context2d, **resolveImage**)`
 
 The Slide2d constructor allows a second parameter:
-the object that maps the URL to the `Image` instance.
+A function to resolve an `Image` by URL.
 
 This allows to cache images yourself for instance
 to ensure that all images are loaded before calling `render`.

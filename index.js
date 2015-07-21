@@ -15,20 +15,34 @@ function UnsupportedDrawOperation (reason, path) {
   this.path = path;
 }
 UnsupportedDrawOperation.prototype = Object.create(Error.prototype, {
-    constructor: {
-        value: UnsupportedDrawOperation,
-        writable: true,
-        configurable: true
-    }
+  constructor: {
+    value: UnsupportedDrawOperation,
+    writable: true,
+    configurable: true
+  }
 });
 
-function Slide2d (context2d, imgsCache) {
-  if (!(this instanceof Slide2d))
-    return new Slide2d(context2d, imgsCache);
-  this.ctx = context2d;
-  this.setImgsCache(imgsCache);
+function defaultResolveImage (url) {
+  if (url in this._imgs) {
+    return this._imgs[url];
+  }
+  var img = new window.Image();
+  img.crossOrigin = true;
+  img.src = url;
+  this._imgs[url] = img;
+  img.onload = this.flush.bind(this);
+  return img;
 }
 
+function Slide2d (context2d, resolveImage) {
+  if (!(this instanceof Slide2d))
+    return new Slide2d(context2d, resolveImage);
+  this.ctx = context2d;
+  this._imgs = {};
+  this.resolveImage = resolveImage || defaultResolveImage;
+}
+
+Slide2d.defaultResolveImage = defaultResolveImage;
 Slide2d.defaults = defaults;
 
 Slide2d.prototype = {
@@ -36,15 +50,6 @@ Slide2d.prototype = {
     this._item = null;
     this._imgs = null;
     this.ctx = null;
-  },
-
-  setImgsCache: function (imgsCache) {
-    this._imgs = {};
-    if (imgsCache) {
-      for (var k in imgsCache) {
-        this._imgs[k] = imgsCache[k];
-      }
-    }
   },
 
   getSize: function (item) {
@@ -56,6 +61,10 @@ Slide2d.prototype = {
     var w = size[0];
     var h = size[1];
     return rectCrop.largest({ width: w, height: h }, this.ctx.canvas);
+  },
+
+  flush: function () {
+    if (this._item) this.render(this._item);
   },
 
   render: function (item, visitor) {
@@ -115,52 +124,38 @@ Slide2d.prototype = {
       throw new UnsupportedDrawOperation("must be a string operation: " + op, path);
     }
     switch (op) {
-      case "drawImage":
-        var img = typeof args[0] === "string" ? this._imageForUrl(args[0]) : img;
-        drawImage.apply(null, [ ctx, img ].concat(args.slice(1)));
-        break;
+    case "drawImage":
+      var img = typeof args[0] === "string" ? this.resolveImage(args[0]) : img;
+      drawImage.apply(null, [ ctx, img ].concat(args.slice(1)));
+      break;
 
-      case "fillText":
-      case "strokeText":
-        var text = args[0];
-        var lines = text.split("\n");
-        var lineslength = lines.length;
-        var x = args[1];
-        var y = args[2];
-        if (lineslength === 1 || args.length < 4) {
-          // Simply apply the operation
-          ctx[op].call(ctx, text, x, y);
+    case "fillText":
+    case "strokeText":
+      var text = args[0];
+      var lines = text.split("\n");
+      var lineslength = lines.length;
+      var x = args[1];
+      var y = args[2];
+      if (lineslength === 1 || args.length < 4) {
+        // Simply apply the operation
+        ctx[op].call(ctx, text, x, y);
+      }
+      else {
+        // Extend the text operation into multi-line text
+        var lineHeight = args[3];
+        for (var i=0; i<lineslength; ++i) {
+          ctx[op].call(ctx, lines[i], x, y + i * lineHeight);
         }
-        else {
-          // Extend the text operation into multi-line text
-          var lineHeight = args[3];
-          for (var i=0; i<lineslength; ++i) {
-            ctx[op].call(ctx, lines[i], x, y + i * lineHeight);
-          }
-        }
-        break;
+      }
+      break;
 
-      default:
-        var f = ctx[op];
-        if (typeof f === "function")
-          f.apply(ctx, args);
-        else
-          throw new UnsupportedDrawOperation(op, path);
+    default:
+      var f = ctx[op];
+      if (typeof f === "function")
+        f.apply(ctx, args);
+      else
+        throw new UnsupportedDrawOperation(op, path);
     }
-  },
-
-  _imageForUrl: function (url) {
-    if (url in this._imgs) {
-      return this._imgs[url];
-    }
-    var img = new window.Image();
-    img.crossOrigin = true;
-    img.src = url;
-    this._imgs[url] = img;
-    img.onload = function () {
-      if (this._item) this.render(this._item);
-    }.bind(this);
-    return img;
   }
 };
 

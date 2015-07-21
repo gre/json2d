@@ -5,7 +5,7 @@ var json = {
     ["drawImage", "http://i.imgur.com/K0iotM4.jpg", 0, 0, 400, 300],
     ["drawImage", "http://i.imgur.com/rGQ1GBo.jpg", 400, 0, 400, 300],
     ["drawImage", "http://i.imgur.com/3Xkv00y.jpg", 0, 300, 400, 300],
-    ["drawImage", "http://i.imgur.com/gKLcnIT.jpg", 400, 300, 400, 300],
+    ["drawImage", "http://i.imgur.com/gKLcnIT.jpg", 400, 300, 400, 300]
   ]
 };
 
@@ -56,14 +56,16 @@ function waitAllImages (json, done) {
     imgsCache[src] = img;
   });
   if (count === 0) setTimeout(done, 0);
-  return imgsCache;
+  return function (url) {
+    return imgsCache[url];
+  };
 }
 
-function create (imgsCache) {
+function create (resolveImage) {
   var Slide2d = require(".");
   var canvas = Canvas(400, 300, window.devicePixelRatio || 1);
   var ctx = canvas.getContext("2d");
-  var slide2d = Slide2d(ctx, imgsCache);
+  var slide2d = Slide2d(ctx, resolveImage);
   document.body.appendChild(canvas);
   return slide2d;
 }
