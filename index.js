@@ -39,7 +39,12 @@ function Slide2d (context2d, resolveImage) {
     return new Slide2d(context2d, resolveImage);
   this.ctx = context2d;
   this._imgs = {};
-  this.resolveImage = resolveImage || defaultResolveImage;
+  this.resolveImage = resolveImage ? function (src) {
+    var res = resolveImage(src);
+    if (typeof res === "string")
+      return defaultResolveImage.call(this, res);
+    return res;
+  } : defaultResolveImage;
 }
 
 Slide2d.defaultResolveImage = defaultResolveImage;
