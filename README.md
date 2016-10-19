@@ -1,5 +1,10 @@
 slide2d
 =======
+
+**IMPORTANT: the library was renamed into `json2d`. Please checkout https://github.com/gre/json2d**
+
+---
+
 Express vectorial content in JSON using canvas2d directives
 
 ## Goal
