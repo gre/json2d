@@ -1,27 +1,23 @@
-slide2d
+json2d
 =======
-
-**IMPORTANT: the library was renamed into `json2d`. Please checkout https://github.com/gre/json2d**
-
----
 
 Express vectorial content in JSON using canvas2d directives
 
 ## Goal
 
-**slide2d** is a thin wrapper to expose canvas2d API in a JSON DSL.
+**json2d** is a thin wrapper to expose canvas2d API in a JSON DSL.
 The goal is to statically describe scalable content.
 
 ## The API
 
 ```
-var Slide2d = require("slide2d");
+var json2d = require("json2d");
 var canvas = ...;
 var ctx = canvas.getContext("2d");
-var slide2d = Slide2d(ctx);
+var json2d = json2d(ctx);
 
 // Now call the render method:
-slide2d.render(data);
+json2d.render(data);
 ```
 
 ## The `data` format
@@ -64,18 +60,18 @@ There are some exceptions where the `draws` get extended.
 
 ### drawImage
 
-`slide2d` supports images drawing with `drawImage` but to define the image you can pass the URL (or a data64 URL) in the first argument.
+`json2d` supports images drawing with `drawImage` but to define the image you can pass the URL (or a data64 URL) in the first argument.
 
 ### Multi-line texts support
 
-`slide2d` supports multi-line texts using the `\n` character.
+`json2d` supports multi-line texts using the `\n` character.
 To do so, every texts will be split on `\n` and result of multiple texts draws.
 Note that you still have to define where the new lines are.
 
 In that context, you
 **MUST provide a 4th parameter** if you want that multi-line feature: **the lineHeight in pixels**.
 
-> Note: the `maxWidth` that allows the [canvas2d specification](http://www.w3.org/TR/2dcontext/#drawing-text-to-the-canvas) is not supported by slide2d.
+> Note: the `maxWidth` that allows the [canvas2d specification](http://www.w3.org/TR/2dcontext/#drawing-text-to-the-canvas) is not supported by json2d.
 
 ## Full Example:
 
@@ -126,11 +122,11 @@ function Canvas (w, h, r) {
   return canvas;
 }
 
-var Slide2d = require("slide2d");
+var json2d = require("json2d");
 var canvas = Canvas(600, 300, window.devicePixelRatio || 1);
 var ctx = canvas.getContext("2d");
-var slide2d = Slide2d(ctx);
-slide2d.render(json);
+var json2d = json2d(ctx);
+json2d.render(json);
 document.body.appendChild(canvas);
 ```
 
@@ -138,9 +134,9 @@ document.body.appendChild(canvas);
 
 Note in the example how the content is trying to take the biggest possible rectangle in the canvas viewport. For the sake of this example, we have drawn the biggest possible rectangle with a red stroke, but usually you just fill text and shapes in the middle to have a seamless rendering.
 
-## `Slide2d(context2d, **resolveImage**)`
+## `json2d(context2d, **resolveImage**)`
 
-The Slide2d constructor allows a second parameter:
+The json2d constructor allows a second parameter:
 A function to resolve an `Image` by URL.
 
 This allows to cache images yourself for instance
@@ -160,7 +156,7 @@ That function is called with 2 parameters:
 - the `path`: an array of indexes of the tree path of the current draw.
 - the `draw` object.
 
-This function is used by `slide2d-editor` implementation.
+This function is used by `json2d-editor` implementation.
 
 ## Used by...
 

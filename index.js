@@ -34,9 +34,9 @@ function defaultResolveImage (url) {
   return img;
 }
 
-function Slide2d (context2d, resolveImage) {
-  if (!(this instanceof Slide2d))
-    return new Slide2d(context2d, resolveImage);
+function json2d (context2d, resolveImage) {
+  if (!(this instanceof json2d))
+    return new json2d(context2d, resolveImage);
   this.ctx = context2d;
   this._imgs = {};
   this.resolveImage = resolveImage ? function (src) {
@@ -47,10 +47,10 @@ function Slide2d (context2d, resolveImage) {
   } : defaultResolveImage;
 }
 
-Slide2d.defaultResolveImage = defaultResolveImage;
-Slide2d.defaults = defaults;
+json2d.defaultResolveImage = defaultResolveImage;
+json2d.defaults = defaults;
 
-Slide2d.prototype = {
+json2d.prototype = {
   destroy: function () {
     this._item = null;
     this._imgs = null;
@@ -164,4 +164,4 @@ Slide2d.prototype = {
   }
 };
 
-module.exports = Slide2d;
+module.exports = json2d;

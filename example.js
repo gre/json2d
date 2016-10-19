@@ -45,12 +45,12 @@ function Canvas (w, h, r) {
   return canvas;
 }
 
-var Slide2d = require(".");
+var json2d = require(".");
 var canvas = Canvas(600, 300, window.devicePixelRatio || 1);
 var ctx = canvas.getContext("2d");
-var slide2d = Slide2d(ctx);
-slide2d.render(json, console.log.bind(console));
+var json2d = json2d(ctx);
+json2d.render(json, console.log.bind(console));
 document.body.appendChild(canvas);
 
 
-window.slide2d = slide2d; // for debug purpose
+window.json2d = json2d; // for debug purpose

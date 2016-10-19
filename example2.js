@@ -13,8 +13,8 @@ create().render(json);
 
 document.body.appendChild(document.createElement("br"));
 
-var asyncSlide2d = create(waitAllImages(json, function () {
-  asyncSlide2d.render(json);
+var asyncjson2d = create(waitAllImages(json, function () {
+  asyncjson2d.render(json);
 }));
 
 ///////////////////////////////////////////////
@@ -62,10 +62,10 @@ function waitAllImages (json, done) {
 }
 
 function create (resolveImage) {
-  var Slide2d = require(".");
+  var json2d = require(".");
   var canvas = Canvas(400, 300, window.devicePixelRatio || 1);
   var ctx = canvas.getContext("2d");
-  var slide2d = Slide2d(ctx, resolveImage);
+  var json2d = json2d(ctx, resolveImage);
   document.body.appendChild(canvas);
-  return slide2d;
+  return json2d;
 }
